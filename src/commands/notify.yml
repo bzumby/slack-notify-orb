@@ -1,0 +1,20 @@
+description: >
+  Send slack message on event with custom template.
+parameters:
+  event:
+    type: string
+    default: ""
+    description: "Pass/Fail event"
+  slack_channel:
+    type: string
+    default: ""
+    description: "Slack Channel ID"
+  template:
+    type: string
+    default: ""
+    description: "Template name from slack_tempates folder"
+steps:
+  - slack/notify:
+      event: << parameters.event >>
+      channel: << parameters.slack_channel >>
+      custom: "<<include(slack_templates/"<< parameters.template >>".json)>>"

@@ -1,0 +1,16 @@
+{
+    "attachments": [
+      {
+        "color": "#ff0000",
+        "blocks": [
+          {
+            "type": "section",
+            "text": {
+              "type": "mrkdwn",
+              "text": "*Failed* :red_circle: \n*CircleCI build*: <${CIRCLE_BUILD_URL}|${CIRCLE_JOB}> \n*Brnach*: `${CIRCLE_BRANCH}`\n*Commit:* <https://github.com/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}/commit/${CIRCLE_SHA1}|${CIRCLE_SHA1}>"
+            }
+          }
+        ]
+      }
+    ]
+  }
