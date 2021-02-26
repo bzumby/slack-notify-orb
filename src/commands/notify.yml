@@ -2,9 +2,13 @@ description: >
   Send slack message on event with custom template.
 parameters:
   event:
-    type: string
-    default: ""
-    description: "Pass/Fail event"
+    default: always
+    type: enum
+    enum:
+        - fail
+        - pass
+        - always
+    description: "Pass/Fail/Always event"
   slack_channel:
     type: string
     default: ""
@@ -14,11 +18,16 @@ parameters:
     default: ""
     description: "Template name from slack_tempates folder"
 steps:
-  - slack/notify:
+  - run:
       environment:
         basic_job_fail: "<<include(slack_templates/basic_job_fail.json)>>"
         basic_job_success: "<<include(slack_templates/basic_job_success.json)>>"
         basic_workflow_success: "<<include(slack_templates/basic_workflow_success.json)>>"
+      command: |
+        echo "export basic_job_fail=$basic_job_fail" >> $BASH_ENV
+        echo "export basic_job_success=$basic_job_success" >> $BASH_ENV
+        echo "export basic_workflow_success=$basic_workflow_success" >> $BASH_ENV
+  - slack/notify:
       event: << parameters.event >>
       channel: << parameters.slack_channel >>
       custom: $<< parameters.template >>
