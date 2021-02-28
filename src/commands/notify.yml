@@ -33,14 +33,13 @@ steps:
         EOF
         )" >> $BASH_ENV
         echo "export basic_job_fail=$(cat \<<EOF
-        '$basic_job_fail'
+        $basic_job_fail
         EOF
         )" >> $BASH_ENV
         echo "export SLACK_MESSAGE_TEMPLATE_NAME=<< parameters.template >>" >> $BASH_ENV
         cat $BASH_ENV
-  - run: echo $basic_job_fail | sed "s|'||g" | sed 's/\\/\\\\/g' | sed 's/"/\\"/g' | sed 's/`/\\`/g'
+  - run: echo $basic_job_fail
   - slack/notify:
       event: << parameters.event >>
       channel: << parameters.slack_channel >>
-      custom: |
-        echo $basic_job_fail | jq .
+      custom: $basic_job_fail
