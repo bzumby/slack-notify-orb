@@ -27,7 +27,8 @@ steps:
         echo "export basic_job_fail=$basic_job_fail" >> $BASH_ENV
         echo "export basic_job_success=$basic_job_success" >> $BASH_ENV
         echo "export basic_workflow_success=$basic_workflow_success" >> $BASH_ENV
+        echo "export SLACK_MESSAGE_TEMPLATE_NAME=<< parameters.template >>" >> $BASH_ENV
   - slack/notify:
       event: << parameters.event >>
       channel: << parameters.slack_channel >>
-      custom: $<< parameters.template >>
+      custom: $(echo ${!SLACK_MESSAGE_TEMPLATE_NAME})
