@@ -42,4 +42,5 @@ steps:
   - slack/notify:
       event: << parameters.event >>
       channel: << parameters.slack_channel >>
-      custom: $basic_job_fail
+      custom: |
+        echo $basic_job_fail | jq .
