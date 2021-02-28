@@ -24,9 +24,9 @@ steps:
         basic_job_success: "<<include(slack_templates/basic_job_success.json)>>"
         basic_workflow_success: "<<include(slack_templates/basic_workflow_success.json)>>"
       command: |
-        echo "export basic_job_fail=$basic_job_fail" >> $BASH_ENV
-        echo "export basic_job_success=$basic_job_success" >> $BASH_ENV
-        echo "export basic_workflow_success=$basic_workflow_success" >> $BASH_ENV
+        echo "export basic_workflow_success=$(echo $basic_workflow_success | sed 's/\\/\\\\/g' | sed 's/"/\\"/g' | sed 's/`/\\`/g')
+        echo "export basic_job_success=$(echo $basic_job_success | sed 's/\\/\\\\/g' | sed 's/"/\\"/g' | sed 's/`/\\`/g')
+        echo "export basic_job_fail=$(echo $basic_job_fail | sed 's/\\/\\\\/g' | sed 's/"/\\"/g' | sed 's/`/\\`/g')
         echo "export SLACK_MESSAGE_TEMPLATE_NAME=<< parameters.template >>" >> $BASH_ENV
   - slack/notify:
       event: << parameters.event >>
