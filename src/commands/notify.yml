@@ -38,8 +38,8 @@ steps:
         )" >> $BASH_ENV
         echo "export SLACK_MESSAGE_TEMPLATE_NAME=<< parameters.template >>" >> $BASH_ENV
         cat $BASH_ENV
-  - run: echo $basic_workflow_success | sed "s|'||g" | sed 's/\\/\\\\/g' | sed 's/"/\\"/g' | sed 's/`/\\`/g'
+  - run: echo $basic_job_fail | sed "s|'||g" | sed 's/\\/\\\\/g' | sed 's/"/\\"/g' | sed 's/`/\\`/g'
   - slack/notify:
       event: << parameters.event >>
       channel: << parameters.slack_channel >>
-      custom: $basic_workflow_success
+      custom: $basic_job_fail
