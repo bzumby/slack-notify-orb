@@ -41,4 +41,4 @@ steps:
   - slack/notify:
       event: << parameters.event >>
       channel: << parameters.slack_channel >>
-      custom: $(echo ${!SLACK_MESSAGE_TEMPLATE_NAME})
+      custom: $(echo ${!SLACK_MESSAGE_TEMPLATE_NAME} | sed "s|'||g")
