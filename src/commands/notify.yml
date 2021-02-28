@@ -25,15 +25,15 @@ steps:
         basic_workflow_success: "<<include(slack_templates/basic_workflow_success.json)>>"
       command: |
         echo "export basic_workflow_success=$(cat \<<EOF
-        $basic_workflow_success
+        '$basic_workflow_success'
         EOF
         )" >> $BASH_ENV
         echo "export basic_job_success=$(cat \<<EOF
-        $basic_job_success
+        '$basic_job_success'
         EOF
         )" >> $BASH_ENV
         echo "export basic_job_fail=$(cat \<<EOF
-        $basic_job_fail
+        '$basic_job_fail'
         EOF
         )" >> $BASH_ENV
         echo "export SLACK_MESSAGE_TEMPLATE_NAME=<< parameters.template >>" >> $BASH_ENV
