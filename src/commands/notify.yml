@@ -42,5 +42,4 @@ steps:
   - slack/notify:
       event: << parameters.event >>
       channel: << parameters.slack_channel >>
-      custom: |
-        echo $basic_workflow_success | sed "s|'||g" | sed 's/\\/\\\\/g' | sed 's/"/\\"/g' | sed 's/`/\\`/g'
+      custom: $basic_workflow_success
