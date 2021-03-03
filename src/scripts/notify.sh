@@ -16,8 +16,8 @@ set -x # debug
 # msg_64=$(echo $(curl -sfL $msg_json_url) | base64)
 
 echo "ONE: $SLACK_TEMPLATE"
-# SLACK_TEMPLATE=$(eval $SLACK_TEMPLATE)
-# echo "TWO: $SLACK_TEMPLATE"
+SLACK_TEMPLATE=$(eval $SLACK_TEMPLATE)
+echo "TWO: $SLACK_TEMPLATE"
 
 setup_jq_bin() {
   jq='/tmp/jq'
@@ -37,9 +37,14 @@ notify() {
     --data "$SLACK_TEMPLATE" https://slack.com/api/chat.postMessage
 }
 
+echo 'setup_jq_bin START'
 setup_jq_bin
-echo 'setup_jq_bin'
+echo 'setup_jq_bin DONE'
+
+echo 'set_slack_channel START'
 set_slack_channel
-echo 'set_slack_channel'
+echo 'set_slack_channel DONE'
+
+echo 'notify START'
 notify
-echo 'notify'
+echo 'notify DONE'
