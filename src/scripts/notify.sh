@@ -8,27 +8,46 @@ set -o errexit
 set -o pipefail
 set -x # debug
 
-setup_jq_bin() {
+set_jq_bin() {
   jq='/tmp/jq'
   curl --location --fail --silent \
       'https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64' --output $jq
   chmod +x $jq
 }
 
-setup_template() {
-  if [ -n "$SLACK_TEMPLATE_URL" ]; then
-    # re-assign var
-    SLACK_TEMPLATE=$(curl -sfL $SLACK_TEMPLATE_URL)
+process_template() {
+  url_regex='^(https|http|file):\/\/.*'
+  if [[ $SLACK_TEMPLATE =~ $url_regex ]]; then
+    # re-assign
+    SLACK_TEMPLATE=$(curl -sfL $SLACK_TEMPLATE)
     SLACK_TEMPLATE=$(echo "$SLACK_TEMPLATE" | sed 's/\\/\\\\/g' | sed 's/"/\\"/g' | sed 's/`/\\`/g')
-    SLACK_TEMPLATE=$(eval echo \""$SLACK_TEMPLATE"\")
   else
+    # string to var
     SLACK_TEMPLATE="\$$SLACK_TEMPLATE"
     SLACK_TEMPLATE=$(eval echo "$SLACK_TEMPLATE" | sed 's/"/\\"/g')
-    SLACK_TEMPLATE=$(eval echo \""$SLACK_TEMPLATE"\")
   fi
-  # add channel
+  # substitute vars & add channel ID
+  SLACK_TEMPLATE=$(eval echo \""$SLACK_TEMPLATE"\")
   SLACK_TEMPLATE=$(echo $SLACK_TEMPLATE | $jq ". + {\"channel\": \"$SLACK_CHANNEL\"}")
+}
 
+choose_template() {
+  declare -A state=( ["pass"]=$PASS_TEMPLATE ["fail"]=$FAIL_TEMPLATE )
+  if [ -n "$SLACK_CONDITION" ]; then
+    if [ -z "$SLACK_TEMPLATE" ]; then
+      if [[ "$SLACK_CONDITION" == "$CCI_STATUS" ]]; then
+        echo "event($SLACK_CONDITION) vs status($CCI_STATUS)"
+        echo 'Sending notification!'
+        SLACK_TEMPLATE="${state[$CCI_STATUS]}"
+      else
+        echo "event($SLACK_CONDITION) vs status($CCI_STATUS)"
+        echo 'Skipping notification!'
+      fi
+    fi
+  else
+    echo "Default: sending '$CCI_STATUS' notification!"
+    SLACK_TEMPLATE="${state[$CCI_STATUS]}"
+  fi
 }
 
 notify() {
@@ -38,6 +57,7 @@ notify() {
     --data "$SLACK_TEMPLATE" 'https://slack.com/api/chat.postMessage'
 }
 
-setup_jq_bin
-setup_template
+set_jq_bin
+choose_template
+process_template
 notify

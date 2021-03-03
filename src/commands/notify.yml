@@ -1,18 +1,31 @@
 description: >
   Send slack message on event with custom template.
 parameters:
+  event:
+    type: enum
+    enum: ["fail", "pass", ""]
+    default: ""
+    description: "Send condition"
   channel:
     type: string
     default: ""
     description: "Slack Channel ID"
+  pass_template:
+    type: string
+    default: "basic_job_pass"
+    description: "Template for PASS"
+  fail_template:
+    type: string
+    default: "basic_job_fail"
+    description: "Template for FAIL"
   template:
     type: string
     default: ""
-    description: "Template name from slack_tempates folder"
+    description: "Slack template JSON name"
   template_url:
     type: string
     default: ""
-    description: "Template name from slack_tempates folder"
+    description: "Valid and Direct URL to slack template JSON"
 steps:
   - run:
       when: on_fail
@@ -26,8 +39,13 @@ steps:
       when: always
       name: 'Slack: notify'
       environment:
+        basic_job_fail: "<<include(slack_templates/basic_job_fail.json)>>"
+        basic_job_pass: "<<include(slack_templates/basic_job_pass.json)>>"
+        basic_workflow_success: "<<include(slack_templates/basic_workflow_success.json)>>"
         SLACK_CHANNEL: "<<parameters.channel>>"
-        basic_job_success: "<<include(slack_templates/basic_job_success.json)>>"
-        SLACK_TEMPLATE: <<parameters.template>>
         SLACK_TEMPLATE_URL: <<parameters.template_url>>
+        SLACK_CONDITION: <<parameters.event>>
+        PASS_TEMPLATE: <<parameters.pass_template>>
+        FAIL_TEMPLATE: <<parameters.fail_template>>
+        PARAM_TEMPLATE: <<parameters.template>>
       command: <<include(scripts/notify.sh)>>
