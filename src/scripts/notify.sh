@@ -15,6 +15,7 @@ set -x # debug
 # msg_json_url='https://gist.githubusercontent.com/bzumby/1f9a3c2fe32ea2a06f17c04b48571a9f/raw/e3423652ca0ac4a53c294d57ce43d966fa73f3d3/success_job_temp'
 # msg_64=$(echo $(curl -sfL $msg_json_url) | base64)
 
+echo $SLACK_TEMPLATE
 
 setup_jq_bin() {
   jq='/tmp/jq'
