@@ -8,7 +8,6 @@ set -o errexit
 set -o pipefail
 set -x # debug
 
-
 setup_jq_bin() {
   jq='/tmp/jq'
   curl --location --fail --silent \
@@ -22,11 +21,12 @@ setup_template() {
   else
     SLACK_TEMPLATE=$(eval $SLACK_TEMPLATE)
   fi
-  SLACK_TEMPLATE=$(echo $SLACK_TEMPLATE | sed 's/\\/\\\\/g' | sed 's/"/\\"/g' | sed 's/`/\\`/g')
-}
-
-setup_slack_channel() {
+  # add channel
   SLACK_TEMPLATE=$(echo $SLACK_TEMPLATE | $jq ". + {\"channel\": \"$SLACK_CHANNEL\"}")
+  # substitute vars
+  echo $SLACK_TEMPLATE > '/tmp/in.json'
+  envsubst < '/tmp/in.json' > '/tmp/out.json'
+  SLACK_TEMPLATE=$(cat '/tmp/out.json')
 }
 
 notify() {
@@ -38,5 +38,4 @@ notify() {
 
 setup_jq_bin
 setup_template
-setup_slack_channel
 notify
