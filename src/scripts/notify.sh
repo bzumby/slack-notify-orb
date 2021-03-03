@@ -9,16 +9,6 @@ set -o pipefail
 set -x # debug
 
 
-# SLACK_TEMPLATE_BASE64=$(echo $SLACK_TEMPLATE | jq -r '. | @base64')
-
-# msg_64=$(cat msg.json | base64)
-# msg_json_url='https://gist.githubusercontent.com/bzumby/1f9a3c2fe32ea2a06f17c04b48571a9f/raw/e3423652ca0ac4a53c294d57ce43d966fa73f3d3/success_job_temp'
-# msg_64=$(echo $(curl -sfL $msg_json_url) | base64)
-
-echo "ONE: $SLACK_TEMPLATE"
-SLACK_TEMPLATE=$(eval $SLACK_TEMPLATE)
-echo "TWO: $SLACK_TEMPLATE"
-
 setup_jq_bin() {
   jq='/tmp/jq'
   curl --location --fail --silent \
@@ -26,7 +16,16 @@ setup_jq_bin() {
   chmod +x $jq
 }
 
-set_slack_channel() {
+setup_template() {
+  if [ -n "$SLACK_TEMPLATE_URL" ]; then
+    SLACK_TEMPLATE=$(curl -sfL $SLACK_TEMPLATE_URL)
+  else
+    SLACK_TEMPLATE="\$$SLACK_TEMPLATE"
+    SLACK_TEMPLATE=$(echo $SLACK_TEMPLATE | sed 's/\\/\\\\/g' | sed 's/"/\\"/g' | sed 's/`/\\`/g')
+  fi
+}
+
+setup_slack_channel() {
   SLACK_TEMPLATE=$(echo $SLACK_TEMPLATE | $jq ". + {\"channel\": \"$SLACK_CHANNEL\"}")
 }
 
@@ -34,17 +33,10 @@ notify() {
   curl -s -f -X POST \
     -H 'Content-type: application/json; charset=UTF-8' \
     -H "Authorization: Bearer $SLACK_ACCESS_TOKEN" \
-    --data "$SLACK_TEMPLATE" https://slack.com/api/chat.postMessage
+    --data "$SLACK_TEMPLATE" 'https://slack.com/api/chat.postMessage'
 }
 
-echo 'setup_jq_bin START'
 setup_jq_bin
-echo 'setup_jq_bin DONE'
-
-echo 'set_slack_channel START'
-set_slack_channel
-echo 'set_slack_channel DONE'
-
-echo 'notify START'
+setup_template
+setup_slack_channel
 notify
-echo 'notify DONE'
