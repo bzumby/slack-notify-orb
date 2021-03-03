@@ -4,11 +4,37 @@
       "color": "#00ff00",
       "blocks": [
         {
+          "type": "header",
+          "text": {
+            "type": "plain_text",
+            "text": "Run Success :white_check_mark:",
+            "emoji": true
+          }
+        },
+        {
           "type": "section",
           "text": {
             "type": "mrkdwn",
-            "text": "*Success* :large_green_circle: \n*CircleCI build*: <https://app.circleci.com/pipelines/workflows/${CIRCLE_WORKFLOW_ID}|${CIRCLE_BRANCH}> \n*Brnach*: `${CIRCLE_BRANCH}`\n*Commit:* <https://github.com/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}/commit/${CIRCLE_SHA1}|${CIRCLE_SHA1}>"
+            "text": "\n*CircleCI run for*: <https://app.circleci.com/pipelines/workflows/${CIRCLE_WORKFLOW_ID}|${CIRCLE_BRANCH}> \n*Brnach*: ${CIRCLE_BRANCH}\n*Commit:* <https://github.com/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}/commit/${CIRCLE_SHA1}|${CIRCLE_SHA1}>\n*Author*: ${CIRCLE_USERNAME}"
+          },
+          "accessory": {
+            "type": "image",
+            "image_url": "https://assets.brandfolder.com/otz5mn-bw4j2w-6jzqo8/original/circle-logo-badge-black.png",
+            "alt_text": "CircleCI"
           }
+        },
+        {
+          "type": "actions",
+          "elements": [
+            {
+              "type": "button",
+              "text": {
+                "type": "plain_text",
+                "text": "Open in CircleCI"
+              },
+              "url": "https://app.circleci.com/pipelines/workflows/${CIRCLE_WORKFLOW_ID}"
+            }
+          ]
         }
       ]
     }

@@ -1,16 +1,42 @@
 {
-  "attachments": [
-    {
-      "color": "#ff0000",
-      "blocks": [
+    "attachments": [
         {
-          "type": "section",
-          "text": {
-            "type": "mrkdwn",
-            "text": "*Failed* :red_circle: \n*CircleCI build*: <${CIRCLE_BUILD_URL}|${CIRCLE_JOB}> \n*Brnach*: `${CIRCLE_BRANCH}`\n*Commit:* <https://github.com/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}/commit/${CIRCLE_SHA1}|${CIRCLE_SHA1}>"
-          }
+            "color": "#ff0000",
+            "blocks": [
+                {
+                    "type": "header",
+                    "text": {
+                        "type": "plain_text",
+                        "text": "Run Failed :red_circle:",
+                        "emoji": true
+                    }
+                },
+                {
+                    "type": "section",
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": "\n*CircleCI job*: <${CIRCLE_BUILD_URL}|${CIRCLE_JOB}> \n*Brnach*: ${CIRCLE_BRANCH}\n*Commit:* <https://github.com/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}/commit/${CIRCLE_SHA1}|${CIRCLE_SHA1}>\n*Author*: ${CIRCLE_USERNAME}"
+                    },
+                    "accessory": {
+                        "type": "image",
+                        "image_url": "https://assets.brandfolder.com/otz5mn-bw4j2w-6jzqo8/original/circle-logo-badge-black.png",
+                        "alt_text": "CircleCI"
+                    }
+                },
+                {
+                    "type": "actions",
+                    "elements": [
+                        {
+                            "type": "button",
+                            "text": {
+                                "type": "plain_text",
+                                "text": "Open in CircleCI"
+                            },
+                            "url": "${CIRCLE_BUILD_URL}"
+                        }
+                    ]
+                }
+            ]
         }
-      ]
-    }
-  ]
+    ]
 }
