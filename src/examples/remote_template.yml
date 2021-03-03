@@ -15,4 +15,4 @@ usage:
       steps:
         - slack/notify:
             channel: 'XXXXXXXX'
-            template_url: https://my-template.com/my-template.json
+            template: https://my-template.com/my-template.json

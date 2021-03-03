@@ -22,10 +22,6 @@ parameters:
     type: string
     default: ""
     description: "Slack template JSON name"
-  template_url:
-    type: string
-    default: ""
-    description: "Valid and Direct URL to slack template JSON"
 steps:
   - run:
       when: on_fail
@@ -43,7 +39,6 @@ steps:
         basic_job_pass: "<<include(slack_templates/basic_job_pass.json)>>"
         basic_workflow_success: "<<include(slack_templates/basic_workflow_success.json)>>"
         SLACK_CHANNEL: "<<parameters.channel>>"
-        SLACK_TEMPLATE_URL: <<parameters.template_url>>
         SLACK_CONDITION: <<parameters.event>>
         PASS_TEMPLATE: <<parameters.pass_template>>
         FAIL_TEMPLATE: <<parameters.fail_template>>

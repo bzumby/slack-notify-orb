@@ -31,22 +31,42 @@ process_template() {
   SLACK_TEMPLATE=$(echo $SLACK_TEMPLATE | $jq ". + {\"channel\": \"$SLACK_CHANNEL\"}")
 }
 
+# choose_template() {
+#   declare -A state=( ["pass"]=$PASS_TEMPLATE ["fail"]=$FAIL_TEMPLATE )
+#   if [ -n "$SLACK_CONDITION" ]; then
+#     if [ -z "$SLACK_TEMPLATE" ]; then
+#       if [[ "$SLACK_CONDITION" == "$CCI_STATUS" ]]; then
+#         echo "event($SLACK_CONDITION) vs status($CCI_STATUS)"
+#         echo 'Sending notification!'
+#         SLACK_TEMPLATE="${state[$CCI_STATUS]}"
+#       else
+#         echo "event($SLACK_CONDITION) vs status($CCI_STATUS)"
+#         echo 'Skipping notification!'
+#       fi
+#     fi
+#   else
+#     echo "Default: sending '$CCI_STATUS' notification!"
+#     SLACK_TEMPLATE="${state[$CCI_STATUS]}"
+#   fi
+# }
+
 choose_template() {
   declare -A state=( ["pass"]=$PASS_TEMPLATE ["fail"]=$FAIL_TEMPLATE )
   if [ -n "$SLACK_CONDITION" ]; then
-    if [ -z "$SLACK_TEMPLATE" ]; then
-      if [[ "$SLACK_CONDITION" == "$CCI_STATUS" ]]; then
-        echo "event($SLACK_CONDITION) vs status($CCI_STATUS)"
-        echo 'Sending notification!'
-        SLACK_TEMPLATE="${state[$CCI_STATUS]}"
-      else
-        echo "event($SLACK_CONDITION) vs status($CCI_STATUS)"
-        echo 'Skipping notification!'
+    echo "Sate: event($SLACK_CONDITION) vs status($CCI_STATUS)"
+    if [[ "$SLACK_CONDITION" == "$CCI_STATUS" ]]; then
+      echo 'Sending notification!'
+      if [ -z "$SLACK_TEMPLATE" ]; then
+        SLACK_TEMPLATE="${state[$SLACK_CONDITION]}"
       fi
+    else
+      echo 'Skipping notification!'
     fi
   else
     echo "Default: sending '$CCI_STATUS' notification!"
-    SLACK_TEMPLATE="${state[$CCI_STATUS]}"
+    if [ -z "$SLACK_TEMPLATE" ]; then
+      SLACK_TEMPLATE="${state[$CCI_STATUS]}"
+    fi
   fi
 }
 
