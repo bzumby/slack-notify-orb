@@ -28,6 +28,6 @@ steps:
       environment:
         SLACK_CHANNEL: "<<parameters.channel>>"
         basic_job_success: "<<include(slack_templates/basic_job_success.json)>>"
-        SLACK_TEMPLATE: "echo <<parameters.template>>"
+        SLACK_TEMPLATE: "echo ${<<parameters.template>>}"
         SLACK_TEMPLATE_URL: <<parameters.template_url>>
       command: <<include(scripts/notify.sh)>>
