@@ -47,5 +47,5 @@ steps:
         SLACK_CONDITION: <<parameters.event>>
         PASS_TEMPLATE: <<parameters.pass_template>>
         FAIL_TEMPLATE: <<parameters.fail_template>>
-        PARAM_TEMPLATE: <<parameters.template>>
+        SLACK_TEMPLATE: <<parameters.template>>
       command: <<include(scripts/notify.sh)>>
