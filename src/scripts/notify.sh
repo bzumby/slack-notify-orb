@@ -61,6 +61,7 @@ choose_template() {
       fi
     else
       echo 'Skipping notification!'
+      exit 0
     fi
   else
     echo "Default: sending '$CCI_STATUS' notification!"
