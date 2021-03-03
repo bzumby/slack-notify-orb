@@ -1,15 +1,7 @@
 description: >
   Send slack message on event with custom template.
 parameters:
-  event:
-    default: always
-    type: enum
-    enum:
-        - fail
-        - pass
-        - always
-    description: "Pass/Fail/Always event"
-  slack_channel:
+  channel:
     type: string
     default: ""
     description: "Slack Channel ID"
@@ -19,27 +11,18 @@ parameters:
     description: "Template name from slack_tempates folder"
 steps:
   - run:
+      when: on_fail
+      name: 'Slack: set status FAIL'
+      command: echo 'export CCI_STATUS=fail' >> $BASH_ENV
+  - run:
+      when: on_success
+      name: 'Slack: set status PASS'
+      command: echo 'export CCI_STATUS=pass' >> $BASH_ENV
+  - run:
+      when: always
+      name: 'Slack: notify'
       environment:
-        basic_job_fail: "<<include(slack_templates/basic_job_fail.json)>>"
+        SLACK_CHANNEL: "<<parameters.channel>>"
         basic_job_success: "<<include(slack_templates/basic_job_success.json)>>"
-        basic_workflow_success: "<<include(slack_templates/basic_workflow_success.json)>>"
-      command: |
-        echo "export basic_workflow_success=$(cat \<<EOF
-        '$basic_workflow_success'
-        EOF
-        )" >> $BASH_ENV
-        echo "export basic_job_success=$(cat \<<EOF
-        '$basic_job_success'
-        EOF
-        )" >> $BASH_ENV
-        echo "export basic_job_fail=$(cat \<<EOF
-        $basic_job_fail
-        EOF
-        )" >> $BASH_ENV
-        echo "export SLACK_MESSAGE_TEMPLATE_NAME=<< parameters.template >>" >> $BASH_ENV
-        cat $BASH_ENV
-  - run: echo $basic_job_fail
-  - slack/notify:
-      event: << parameters.event >>
-      channel: << parameters.slack_channel >>
-      custom: $basic_job_fail
+        SLACK_TEMPLATE: "${!<<parameters.template>>}"
+      command: <<include(scripts/notify.sh)>>
