@@ -9,7 +9,7 @@ parameters:
   channel:
     type: string
     default: ""
-    description: "Slack Channel ID"
+    description: "Slack Channel ID(s)"
   pass_template:
     type: string
     default: "basic_job_pass"

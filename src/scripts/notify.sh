@@ -31,25 +31,6 @@ process_template() {
   SLACK_TEMPLATE=$(echo $SLACK_TEMPLATE | $jq ". + {\"channel\": \"$SLACK_CHANNEL\"}")
 }
 
-# choose_template() {
-#   declare -A state=( ["pass"]=$PASS_TEMPLATE ["fail"]=$FAIL_TEMPLATE )
-#   if [ -n "$SLACK_CONDITION" ]; then
-#     if [ -z "$SLACK_TEMPLATE" ]; then
-#       if [[ "$SLACK_CONDITION" == "$CCI_STATUS" ]]; then
-#         echo "event($SLACK_CONDITION) vs status($CCI_STATUS)"
-#         echo 'Sending notification!'
-#         SLACK_TEMPLATE="${state[$CCI_STATUS]}"
-#       else
-#         echo "event($SLACK_CONDITION) vs status($CCI_STATUS)"
-#         echo 'Skipping notification!'
-#       fi
-#     fi
-#   else
-#     echo "Default: sending '$CCI_STATUS' notification!"
-#     SLACK_TEMPLATE="${state[$CCI_STATUS]}"
-#   fi
-# }
-
 choose_template() {
   declare -A state=( ["pass"]=$PASS_TEMPLATE ["fail"]=$FAIL_TEMPLATE )
   if [ -n "$SLACK_CONDITION" ]; then
@@ -72,10 +53,14 @@ choose_template() {
 }
 
 notify() {
+for i in $(echo $SLACK_CHANNEL | sed 's/,/ /g')
+do
+  SLACK_TEMPLATE=$(echo "$SLACK_TEMPLATE" | $jq --arg channel "$i" '.channel = $channel')
   curl -s -f -X POST \
     -H 'Content-type: application/json; charset=UTF-8' \
     -H "Authorization: Bearer $SLACK_ACCESS_TOKEN" \
     --data "$SLACK_TEMPLATE" 'https://slack.com/api/chat.postMessage'
+done
 }
 
 set_jq_bin
