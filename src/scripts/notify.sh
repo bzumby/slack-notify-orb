@@ -17,16 +17,18 @@ setup_jq_bin() {
 
 setup_template() {
   if [ -n "$SLACK_TEMPLATE_URL" ]; then
+    # re-assign var
     SLACK_TEMPLATE=$(curl -sfL $SLACK_TEMPLATE_URL)
+    SLACK_TEMPLATE=$(echo "$SLACK_TEMPLATE" | sed 's/\\/\\\\/g' | sed 's/"/\\"/g' | sed 's/`/\\`/g')
+    SLACK_TEMPLATE=$(eval echo \""$SLACK_TEMPLATE"\")
   else
-    SLACK_TEMPLATE=$(eval $SLACK_TEMPLATE)
+    SLACK_TEMPLATE="\$$SLACK_TEMPLATE"
+    SLACK_TEMPLATE=$(eval echo "$SLACK_TEMPLATE" | sed 's/"/\\"/g')
+    SLACK_TEMPLATE=$(eval echo \""$SLACK_TEMPLATE"\")
   fi
   # add channel
   SLACK_TEMPLATE=$(echo $SLACK_TEMPLATE | $jq ". + {\"channel\": \"$SLACK_CHANNEL\"}")
-  # substitute vars
-  echo $SLACK_TEMPLATE > '/tmp/in.json'
-  envsubst < '/tmp/in.json' > '/tmp/out.json'
-  SLACK_TEMPLATE=$(cat '/tmp/out.json')
+
 }
 
 notify() {
