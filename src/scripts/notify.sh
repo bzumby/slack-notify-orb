@@ -6,6 +6,7 @@ set -o nounset
 set -o errexit
 # Use the error status of the first failure, rather than that of the last item in a pipeline.
 set -o pipefail
+set -x # debug
 
 
 # SLACK_TEMPLATE_BASE64=$(echo $SLACK_TEMPLATE | jq -r '. | @base64')
@@ -34,5 +35,8 @@ notify() {
 }
 
 setup_jq_bin
+echo 'setup_jq_bin'
 set_slack_channel
+echo 'set_slack_channel'
 notify
+echo 'notify'
