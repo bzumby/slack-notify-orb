@@ -20,9 +20,9 @@ setup_template() {
   if [ -n "$SLACK_TEMPLATE_URL" ]; then
     SLACK_TEMPLATE=$(curl -sfL $SLACK_TEMPLATE_URL)
   else
-    SLACK_TEMPLATE="\$$SLACK_TEMPLATE"
-    SLACK_TEMPLATE=$(echo $SLACK_TEMPLATE | sed 's/\\/\\\\/g' | sed 's/"/\\"/g' | sed 's/`/\\`/g')
+    SLACK_TEMPLATE=$(eval $SLACK_TEMPLATE)
   fi
+  SLACK_TEMPLATE=$(echo $SLACK_TEMPLATE | sed 's/\\/\\\\/g' | sed 's/"/\\"/g' | sed 's/`/\\`/g')
 }
 
 setup_slack_channel() {
