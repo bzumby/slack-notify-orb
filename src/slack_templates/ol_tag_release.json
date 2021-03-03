@@ -1,0 +1,26 @@
+{
+    "attachments": [
+        {
+            "blocks": [
+                {
+                    "type": "header",
+                    "text": {
+                        "type": "plain_text",
+                        "text": "RELEASE READY:tada::tada::tada: \n $OL_PROJECT_NAME : $OL_GIT_TAG_SHORT\n ",
+                        "emoji": true
+                    }
+                },
+                {
+                    "type": "divider"
+                },
+                {
+                    "type": "section",
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": "*project* :: <$OL_GIT_REPOSITORY| $OL_PROJECT_NAME>\n*version* :: $OL_GIT_TAG"
+                    }
+                }
+            ]
+        }
+    ]
+}
