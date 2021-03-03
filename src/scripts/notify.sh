@@ -20,11 +20,10 @@ setup_jq_bin() {
   curl --location --fail --silent \
       'https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64' --output $jq
   chmod +x $jq
-  ln -sf $jq /usr/local/bin/jq
 }
 
 set_slack_channel() {
-  SLACK_TEMPLATE=$(echo $SLACK_TEMPLATE | jq ". + {\"channel\": \"$SLACK_CHANNEL\"}")
+  SLACK_TEMPLATE=$(echo $SLACK_TEMPLATE | $jq ". + {\"channel\": \"$SLACK_CHANNEL\"}")
 }
 
 notify() {
