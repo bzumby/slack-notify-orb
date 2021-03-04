@@ -1,12 +1,13 @@
 {
     "attachments": [
         {
+            "color": "#00ff00",
             "blocks": [
                 {
                     "type": "header",
                     "text": {
                         "type": "plain_text",
-                        "text": "RELEASE READY:tada::tada::tada: \n $OL_PROJECT_NAME : $OL_GIT_TAG_SHORT\n ",
+                        "text": "RELEASE READY:tada::tada::tada: \n ${OL_PROJECT_NAME} : ${OL_GIT_TAG_SHORT}\n ",
                         "emoji": true
                     }
                 },
@@ -17,7 +18,7 @@
                     "type": "section",
                     "text": {
                         "type": "mrkdwn",
-                        "text": "*project* :: <$OL_GIT_REPOSITORY| $OL_PROJECT_NAME>\n*version* :: $OL_GIT_TAG"
+                        "text": "*project* :: <https://github.com/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}| ${CIRCLE_PROJECT_REPONAME}>\n*version* :: <https://github.com/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}/releases/tag/${OL_GIT_TAG}|${OL_GIT_TAG}>"
                     }
                 }
             ]

@@ -1,6 +1,7 @@
 {
     "attachments": [
         {
+            "color": "#00ff00",
             "blocks": [
                 {
                     "type": "header",
@@ -17,7 +18,7 @@
                     "type": "section",
                     "text": {
                         "type": "mrkdwn",
-                        "text": "*project* :: <https://github.com/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}| ${CIRCLE_PROJECT_REPONAME}>\n*version* :: ${CIRCLE_TAG}"
+                        "text": "*project* :: <https://github.com/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}| ${CIRCLE_PROJECT_REPONAME}>\n*version* :: <https://github.com/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}/releases/tag/${CIRCLE_TAG}|${CIRCLE_TAG}>"
                     }
                 }
             ]
