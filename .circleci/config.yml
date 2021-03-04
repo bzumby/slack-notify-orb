@@ -7,8 +7,6 @@ orbs:
   bats: circleci/bats@1.0
   shellcheck: circleci/shellcheck@2.0
 
-# Pipeline Parameters
-## These parameters are used internally by orb-tools. Skip to the Jobs section.
 parameters:
   run-integration-tests:
     description: An internal flag to prevent integration test from running before a development version has been created.
@@ -22,17 +20,58 @@ parameters:
     type: string
     default: "dev:alpha"
 
-# jobs:
-  # # Define one or more jobs which will utilize your orb's commands and parameters to validate your changes.
-  # integration-test-1:
-  #   docker:
-  #     - image: cimg/base:stable
-  #   steps:
-  #     - checkout
-  #     # "greet" is a sample command packaged with this orb config.
-  #     # This sample integration test will run as long as the greet command exists. Once you remove the greet command you should remove this line.
-  #     # Push new changes first, before adding new tests to your config.
-  #     - slack-notify-orb/notify
+jobs:
+  # integration testing jobs
+  NOTIFY-RED-EVENT-FAIL-TEMPLATE-URL:
+    executor: cimg-base
+    steps:
+      - run: echo 'This should notify RED' && exit 1
+      - slack/notify:
+          channel: C01G8FJ9NFR,C01G8FJ9NFR
+          event: fail
+          template: https://gist.githubusercontent.com/bzumby/3926e13a32aebff6f553c22debd11c80/raw/f1f30fbf86ce0e8ad3dd99b23a5ce08b7ef57b0e/basic_job_fail
+  DONT-NOTIFY-EVENT-PASS-TEMPLATE-URL:
+    executor: cimg-base
+    steps:
+      - run: echo 'This should NOT notify' && exit 1
+      - slack/notify:
+          channel: C01G8FJ9NFR
+          event: pass
+          template: https://gist.githubusercontent.com/bzumby/427c71f13a9c03df031bf7b455e4f16d/raw/e2a0a5352517b33a757f1b03fb00ff98c0f78d75/basic_job_success.json
+  NOTIFY-GREEN-NO-EVENT-JOB-PASS:
+    executor: cimg-base
+    steps:
+      - run: echo 'This should notify GREEN'
+      - slack/notify:
+          channel: C01G8FJ9NFR
+  NOTIFY-RED-NO-EVENT-JOB-FAIL:
+    executor: cimg-base
+    steps:
+      - run: echo 'This should notify RED' && exit 1
+      - slack/notify:
+          channel: C01G8FJ9NFR
+  NOTIFY-GREEN-EVENT-PASS-NON-DEFAULT-TEMPLATE:
+    executor: cimg-base
+    steps:
+      - run: echo 'This should notify GREEN workflow'
+      - slack/notify:
+          channel: C01G8FJ9NFR
+          event: pass
+          template: basic_workflow_success
+  DONT-NOTIFY-EVENT-FAIL-DEFAULT-TEMPLATE:
+    executor: cimg-base
+    steps:
+      - run: echo 'This should NOT notify'
+      - slack/notify:
+          channel: C01G8FJ9NFR
+          event: fail
+  NOTIFY-GREEN-EVENT-PASS-DEFAULT-TEMPLATE:
+    executor: cimg-base
+    steps:
+      - run: echo 'This should notify GREEN'
+      - slack/notify:
+          channel: C01G8FJ9NFR
+          event: pass
 
 workflows:
   # Prior to producing a development orb (which requires credentials) basic validation, linting, and even unit testing can be performed.
@@ -42,12 +81,8 @@ workflows:
     jobs:
       - orb-tools/lint # Lint Yaml files
       - orb-tools/pack # Pack orb source
-      # - shellcheck/check:
-      #     dir: ./src/scripts
-      #     exclude: SC2148
-      # # optional: Run BATS tests against your scripts
-      # - bats/run:
-      #     path: ./src/tests
+      - shellcheck/check:
+          dir: ./src/scripts
       # If you accept building open source forks, protect your secrects behind a restricted context.
       # A job containing restricted context (which holds your orb publishing credentials) may only be accessed by a user with proper permissions.
       # An open source user may begin a pipeline with a PR, and once the pipeline is approved by an authorized user at this point, the pipeline will continue with the proper context permissions.
@@ -66,6 +101,44 @@ workflows:
           requires:
             - orb-tools/lint
             - orb-tools/pack
+      # Uncomment for Integration testing
+      # - DONT-NOTIFY-EVENT-FAIL-DEFAULT-TEMPLATE:
+      #     requires:
+      #       - INFO
+      #     context:
+      #       - SLACK_INTEGRATION
+      # - NOTIFY-GREEN-EVENT-PASS-DEFAULT-TEMPLATE:
+      #     requires:
+      #       - INFO
+      #     context:
+      #       - SLACK_INTEGRATION
+      # - NOTIFY-GREEN-EVENT-PASS-NON-DEFAULT-TEMPLATE:
+      #     requires:
+      #       - INFO
+      #     context:
+      #       - SLACK_INTEGRATION
+      # - NOTIFY-RED-NO-EVENT-JOB-FAIL:
+      #     requires:
+      #       - INFO
+      #     context:
+      #       - SLACK_INTEGRATION
+      # - NOTIFY-GREEN-NO-EVENT-JOB-PASS:
+      #     requires:
+      #       - INFO
+      #     context:
+      #       - SLACK_INTEGRATION
+      # - DONT-NOTIFY-EVENT-PASS-TEMPLATE-URL:
+      #     requires:
+      #       - INFO
+      #     context:
+      #       - SLACK_INTEGRATION
+      # - NOTIFY-RED-EVENT-FAIL-TEMPLATE-URL:
+      #     requires:
+      #       - INFO
+      #     context:
+      #       - SLACK_INTEGRATION
+
+
       # Trigger an integration workflow to test the
       # dev:${CIRCLE_SHA1:0:7} version of your orb
       - orb-tools/trigger-integration-tests-workflow:

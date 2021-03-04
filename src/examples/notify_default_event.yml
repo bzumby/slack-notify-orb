@@ -1,0 +1,18 @@
+description: >
+  Example usage for slack-notify-orb
+
+usage:
+  version: 2.1
+  orbs:
+    slack: zumby/slack-notify-orb@0.0.1
+  workflows:
+    NOTIFY:
+      jobs:
+        - NOTIFY-DEFAULT-EVENT
+  jobs:
+    NOTIFY-DEFAULT-EVENT:
+      executor: cimg-base
+      steps:
+        - slack/notify:
+            channel: 'XXXXXXXX'
+            event: pass

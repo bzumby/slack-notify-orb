@@ -8,11 +8,10 @@ usage:
   workflows:
     NOTIFY:
       jobs:
-        - NOTIFY
+        - NOTIFY-DEFAULT-PASS-FAIL
   jobs:
-    NOTIFY:
+    NOTIFY-DEFAULT-PASS-FAIL:
       executor: cimg-base
       steps:
         - slack/notify:
             channel: 'XXXXXXXX'
-            template: basic_job_success

@@ -8,15 +8,14 @@ parameters:
     description: "Send condition"
   channel:
     type: string
-    default: ""
     description: "Slack Channel ID(s)"
   pass_template:
     type: string
-    default: "basic_job_pass"
+    default: "joab_pass"
     description: "Template for PASS"
   fail_template:
     type: string
-    default: "basic_job_fail"
+    default: "job_fail"
     description: "Template for FAIL"
   template:
     type: string
@@ -35,9 +34,11 @@ steps:
       when: always
       name: 'Slack: notify'
       environment:
-        basic_job_fail: "<<include(slack_templates/basic_job_fail.json)>>"
-        basic_job_pass: "<<include(slack_templates/basic_job_pass.json)>>"
-        basic_workflow_success: "<<include(slack_templates/basic_workflow_success.json)>>"
+        job_fail: "<<include(slack_templates/job_fail.json)>>"
+        joab_pass: "<<include(slack_templates/joab_pass.json)>>"
+        workflow_success: "<<include(slack_templates/workflow_success.json)>>"
+        tag_release_success: "<<include(slack_templates/tag_release_success.json)>>"
+        ol_tag_release_success: "<<include(slack_templates/ol_tag_release_success.json)>>"
         SLACK_CHANNEL: "<<parameters.channel>>"
         SLACK_CONDITION: <<parameters.event>>
         PASS_TEMPLATE: <<parameters.pass_template>>

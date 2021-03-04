@@ -8,11 +8,12 @@ usage:
   workflows:
     NOTIFY:
       jobs:
-        - NOTIFY
+        - NOTIFY-EVENT-TEMPLATE-URL
   jobs:
-    NOTIFY:
+    NOTIFY-EVENT-TEMPLATE-URL:
       executor: cimg-base
       steps:
         - slack/notify:
             channel: 'XXXXXXXX'
             template: https://my-template.com/my-template.json
+            event: pass

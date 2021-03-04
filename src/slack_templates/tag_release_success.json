@@ -1,0 +1,26 @@
+{
+    "attachments": [
+        {
+            "blocks": [
+                {
+                    "type": "header",
+                    "text": {
+                        "type": "plain_text",
+                        "text": "RELEASE READY:tada::tada::tada: \n ${CIRCLE_PROJECT_REPONAME} : ${CIRCLE_TAG}\n ",
+                        "emoji": true
+                    }
+                },
+                {
+                    "type": "divider"
+                },
+                {
+                    "type": "section",
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": "*project* :: <https://github.com/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}| ${CIRCLE_PROJECT_REPONAME}>\n*version* :: ${CIRCLE_TAG}"
+                    }
+                }
+            ]
+        }
+    ]
+}
