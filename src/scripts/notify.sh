@@ -19,7 +19,8 @@ process_template() {
   url_regex='^(https|http|file):\/\/.*'
   if [[ $SLACK_TEMPLATE =~ $url_regex ]]; then
     # re-assign
-    SLACK_TEMPLATE=$(curl -sfL $SLACK_TEMPLATE)
+    SLACK_TEMPLATE=$(curl -sfL "$SLACK_TEMPLATE")
+    # shellcheck disable=SC2016
     SLACK_TEMPLATE=$(echo "$SLACK_TEMPLATE" | sed 's/\\/\\\\/g' | sed 's/"/\\"/g' | sed 's/`/\\`/g')
   else
     # string to var
@@ -28,7 +29,7 @@ process_template() {
   fi
   # substitute vars & add channel ID
   SLACK_TEMPLATE=$(eval echo \""$SLACK_TEMPLATE"\")
-  SLACK_TEMPLATE=$(echo $SLACK_TEMPLATE | $jq ". + {\"channel\": \"$SLACK_CHANNEL\"}")
+  SLACK_TEMPLATE=$(echo "$SLACK_TEMPLATE" | $jq ". + {\"channel\": \"$SLACK_CHANNEL\"}")
 }
 
 choose_template() {
@@ -53,8 +54,9 @@ choose_template() {
 }
 
 notify() {
-for i in $(echo $SLACK_CHANNEL | sed 's/,/ /g')
+for i in ${SLACK_CHANNEL/,/ }
 do
+  # shellcheck disable=SC2016
   SLACK_TEMPLATE=$(echo "$SLACK_TEMPLATE" | $jq --arg channel "$i" '.channel = $channel')
   curl -s -f -X POST \
     -H 'Content-type: application/json; charset=UTF-8' \
